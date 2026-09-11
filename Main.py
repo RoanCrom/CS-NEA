@@ -1,52 +1,45 @@
+import json
 import random
 
-question_list =["1","2","3","4","5"]
-answer_list = ["a","b","c","d","e"]
-weight_list = [1,1,1,1,1]
+def load_questions(file_path):
+    with open(file_path, "r", encoding="utf-8") as file:
+        return json.load(file)
 
-def start () :
+def start():
+    q_path = "Questions.json" 
+    question_list = load_questions(q_path)
     
-    cor = 0
-    totalQ = 10
-    
-    Question =[]
-    Answer =[]
-    QuestionIndex=[]
+    weight_list = [1] * len(question_list)
+    totalQ = 3  
 
-    for i in range (0,totalQ):
+    while True:
+        cor = 0
+        chosen_questions = []
+        chosen_answers = []
+        chosen_indices = []
+
+        for _ in range(totalQ):
+            idx = random.choices(range(len(question_list)), weights=weight_list)[0]
             
-        x = random.choices(range(len(question_list)),weights=weight_list)[0]
-        
-        Question.append(question_list[x])
-        Answer.append(answer_list[x])
-        QuestionIndex.append(x)
+            chosen_questions.append(question_list[idx]["question"])
+            chosen_answers.append(question_list[idx]["answer"])
+            chosen_indices.append(idx)
 
-        
+        for o in range(len(chosen_questions)):
+            user_ans = input(f"\n{chosen_questions[o]}\nYour answer: ")
+            current_idx = chosen_indices[o]
 
-    for o in range (0, len(Question)) :
-        
-
-        AskedQ = input(f"{Question[o]}\n")
-
-        CurrentIndex = QuestionIndex[o]
-
-        if AskedQ.lower() == Answer[o] :
-            print("Correct")
-
-            cor += 1
-
-            if weight_list[CurrentIndex] > 1:
-                weight_list[CurrentIndex] -= 1
+            if user_ans.lower().strip() == str(chosen_answers[o]).lower().strip():
+                print("Correct!")
+                cor += 1
+                if weight_list[current_idx] > 1:
+                    weight_list[current_idx] -= 1
             else:
-                weight_list[CurrentIndex] = weight_list[CurrentIndex]
-        else:
-            print("incorrect")
-            weight_list[CurrentIndex] += 1
+                print(f"Incorrect. The correct answer was: {chosen_answers[o]}")
+                weight_list[current_idx] += 1
+
+        print(weight_list)
+        print(f"You got {cor} out of {totalQ} correct!")
 
 
-    print(weight_list)
-    print(f"you got {cor} out of {totalQ}")
-
-    start()
-    
 start()
