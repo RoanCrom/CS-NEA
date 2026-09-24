@@ -1,6 +1,8 @@
 import json
 import random
 
+x = 10
+
 def load_questions(file_path):
     with open(file_path, "r", encoding="utf-8") as file:
         return json.load(file)
